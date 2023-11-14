@@ -12,8 +12,21 @@ typedef struct Node
     struct Node *right;
 } Node;
 
-Node *initializeQueue()
+void addTree(Node *node, char value)
 {
+    if (node->left == NULL)
+    {
+        Node leftNode = {value, NULL, NULL};
+        node->left = &leftNode;
+        return;
+    }
+
+    if (node->right == NULL)
+    {
+        Node rightNode = {value, NULL, NULL};
+        node->right = &rightNode;
+        return;
+    }
 }
 
 int getNumberOfNodes(int numberOfLevels)
@@ -54,9 +67,22 @@ void main()
     char value;
     char rootValue;
 
+    presentNodes = 0;
+
     p("Number of levels: \n");
     s("%i", &numberOfLevels);
 
     nodes = getNumberOfNodes(numberOfLevels);
     p("Number of nodes: %i\n", nodes);
+
+    Node root = {'a', NULL, NULL};
+    presentNodes++;
+
+    while (presentNodes <= nodes)
+    {
+        addTree(&root, 'b');
+        presentNodes++;
+    }
+
+    p("Expected to be b: %c", root.right->value);
 }
