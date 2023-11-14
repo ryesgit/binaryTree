@@ -66,6 +66,7 @@ void main()
     int i;
     char value;
     char rootValue;
+    Node *currentNode;
 
     presentNodes = 0;
 
@@ -76,11 +77,12 @@ void main()
     p("Number of nodes: %i\n", nodes);
 
     Node root = {'a', NULL, NULL};
+    currentNode = &root;
     presentNodes++;
 
     while (presentNodes <= nodes)
     {
-        addTree(&root, 'b');
+        addTree(currentNode, 'b');
         presentNodes++;
     }
 
