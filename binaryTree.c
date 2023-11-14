@@ -12,19 +12,61 @@ typedef struct Node
     struct Node *right;
 } Node;
 
+typedef struct Queue
+{
+    Node *node;
+    struct Queue *next;
+} Queue;
+
+void enqueue(Queue *queue, Node *node)
+{
+    Queue *currentQueue = queue;
+
+    while (currentQueue->next != NULL)
+    {
+        currentQueue = currentQueue->next;
+    }
+
+    Queue *newQueue = (Queue *)malloc(sizeof(Queue));
+    newQueue->node = node;
+    newQueue->next = NULL;
+    currentQueue->next = newQueue;
+}
+
+Node *dequeue(Queue *queue)
+{
+    if (queue->next == NULL)
+    {
+        return NULL;
+    }
+
+    Queue *tempQueue = queue->next;
+    Node *tempNode = tempQueue->node;
+
+    queue->next = tempQueue->next;
+
+    return tempNode;
+}
+
 void addTree(Node *node, char value)
 {
     if (node->left == NULL)
     {
-        Node leftNode = {value, NULL, NULL};
-        node->left = &leftNode;
+        Node *leftNode = (Node *)malloc(sizeof(Node));
+        leftNode->value = value;
+        leftNode->left = NULL;
+        leftNode->right = NULL;
+        node->left = leftNode;
         return;
     }
 
     if (node->right == NULL)
     {
-        Node rightNode = {value, NULL, NULL};
-        node->right = &rightNode;
+        Node *rightNode = (Node *)malloc(sizeof(Node));
+        rightNode->value = value;
+        rightNode->left = NULL;
+        rightNode->right = NULL;
+        node->right = rightNode;
         return;
     }
 }
@@ -63,7 +105,6 @@ void main()
     int numberOfLevels;
     int nodes;
     int presentNodes;
-    int i;
     char value;
     char rootValue;
     Node *currentNode;
@@ -77,14 +118,36 @@ void main()
     p("Number of nodes: %i\n", nodes);
 
     Node root = {'a', NULL, NULL};
+    Queue queue = {&root, NULL};
     currentNode = &root;
     presentNodes++;
-
-    while (presentNodes <= nodes)
+    while (presentNodes <= nodes - 1)
     {
-        addTree(currentNode, 'b');
-        presentNodes++;
+        if (currentNode->left == NULL || currentNode->right == NULL)
+        {
+            p("Value for node #%i", presentNodes);
+            s("%s", &value);
+            addTree(currentNode, value);
+            presentNodes++;
+            continue;
+        }
+
+        if (currentNode->left->left == NULL || currentNode->left->right == NULL)
+        {
+            p("Queuing left node\n");
+            enqueue(&queue, currentNode->left);
+        }
+
+        if (currentNode->right->left == NULL || currentNode->right->right == NULL)
+        {
+            p("Queuing right node\n");
+            enqueue(&queue, currentNode->right);
+        }
+
+        currentNode = dequeue(&queue);
     }
 
-    p("Expected to be b: %c", root.right->value);
+    Node rootRight = *(root.right);
+    Node rootRightLeft = *(rootRight.left);
+    p("Expected to be f: %c", rootRightLeft.value);
 }
