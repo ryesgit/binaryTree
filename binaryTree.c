@@ -12,7 +12,7 @@ typedef struct Node
     struct Node *right;
 } Node;
 
-void initializeQueue()
+Node *initializeQueue()
 {
 }
 
@@ -20,20 +20,16 @@ int getNumberOfNodes(int numberOfLevels)
 {
 
     int nodes;
+    numberOfLevels--;
 
-    if (numberOfLevels == 1)
-    {
-        return 1;
-    }
-
-    if (numberOfLevels > 1)
+    if (numberOfLevels < 1)
     {
         nodes = pow(2, numberOfLevels);
     }
 
     else
     {
-        nodes = pow(2, numberOfLevels) + 1;
+        nodes = pow(2, numberOfLevels + 1) - 1;
     }
 
     return nodes;
@@ -53,6 +49,7 @@ void main()
 {
     int numberOfLevels;
     int nodes;
+    int presentNodes;
     int i;
     char value;
     char rootValue;
@@ -62,14 +59,4 @@ void main()
 
     nodes = getNumberOfNodes(numberOfLevels);
     p("Number of nodes: %i\n", nodes);
-
-    Node lastNode;
-
-    p("Root value: ");
-    s("%s", &rootValue);
-    Node root = {rootValue, NULL, NULL};
-
-    lastNode = root;
-
-    p("Expect to be first inputted node: %c", lastNode.value);
 }
